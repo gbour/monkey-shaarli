@@ -96,19 +96,32 @@ rSne+uJ68d1f3JIf9feuGijvPVLVMhcKSAV24VYnnrJr438O33c4X+WEvRbhH3LPPfdc6fu+I4Q4\
 MQzD5UqphGVZu8vl8raWlhY9Z86c5+65557ajh07zODgoJw2bVq8ceNG8cADD+Qrlcqq8fHxI8Mw\
 vBBISSlvlVLuWrt27Xu4/wsDKC1Eh1k3bwAAAABJRU5ErkJggg==";
 
+var tag="\
+iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0\
+U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHcSURBVDjLhZPZihpBFIbrJeY2wbcQmjxd\
+IGSSTC4zQxLyAK4o7igoKm7TPW49LoiYjqLG3DWpZmx7/tQpsR1xycW5qTr/9/+n+jTTdR3dbhft\
+dhutVgvNZhOapkFVVTQajSsA7FKxTqcDx3GOajqdSki1Wr0IYeRMAsMwpPNkMnEhdCZSoFQqnYUw\
+ikzN5EYH9XpdNU0Ttm3LcwJWKhXk8/mTEEauu0YhfhKRDcuysDBt5H5tk4zHYxSLReRyuSMII+dd\
+5M1mAxL//uvgw8Mz3t4DWWN7NxqNKAXS6fQBhIkZ+Wq1kk3r9Rpz4XytPeNLF/iqAx8f9pDhcEgp\
+EI/HXQir1WpvxIx8uVzKps7Kls53AvCjB3x7PIQMBgNKgUgkIiGSUi6XFTEjXywWsunxj433qoM7\
+fQ+51oDMzy2k1+tRCoRCoSt3lkKhoIgZ+Xw+P4J8F4DPTeDm3oK92aZIJpMIBAKvD15UzKdks1k+\
+m81cyDsB+SRGuG2tYVpPL8Ued4SXlclklFQqxWkTCaILyG3bgWXvnf1+v8d9xFPLkUgklFgsxmkT\
+d5+YxOL8QHwWQBWNRr3ipTktWL/fPym+CKAKh8PeYDDISezz+TwnV/l/v6tw9Qrxq3P3/wBazDrs\
+tPR7KQAAAABJRU5ErkJggg==";
+
 var style='\
 	div#shaarli-box {\
 		z-index: 1000;\
 		visibility: hidden;\
 		position: fixed;\
-		top: 30px;\
-		right: 30px;\
-		width: 150px;\
-		padding: 5px;\
-		border-color: #ccc;\
-		border-radius: 2px;\
+		top: 25px;\
+		right: 25px;\
+		width: 300px;\
+		padding: 5px 5px 0px 5px;\
+		border: 1px solid #999;\
+		border-radius: 3px;\
 		box-shadow: 2px 2px 2px #999;\
-		background: #fff;\
+		background: rgb(238, 238, 238);\
 	}\
 	\
 	div#shaarli-box:hover, div#shaarli-box.show {\
@@ -118,9 +131,13 @@ var style='\
 	div#shaarli-box.found {\
 		background-position: 0px 0px;\
 	}\
+	div#shaarli-box div {\
+		display: none;\
+	}\
 	div#shaarli-box #icon {\
 		//border: 1px solid black;\
 		visibility: visible;\
+		display: block;\
 		width: 30px;\
 		height: 28px;\
 		position: fixed;\
@@ -133,8 +150,46 @@ var style='\
 	div#shaarli-box.found #icon {\
 		background-position: 0px 0px;\
 	}\
-	div#shaarli-box div#config.hidden {\
-		visibility: hidden;\
+	div#shaarli-box.show {\
+		visibility: visible;\
+	}\
+	div#shaarli-box .show {\
+		visibility: visible;\
+		display: block;\
+	}\
+	div#shaarli-box h1 {\
+		margin: 0px;\
+		padding: 0px;\
+	}\
+	div#shaarli-box h1 a {\
+		line-height: 1.2em;\
+		font-family: Arial,sans-serif;\
+		font-size: 12pt;\
+		font-style: italic;\
+		font-weight: bold;\
+		text-decoration: none;\
+		color: rgb(128, 173, 72);\
+	}\
+	div#shaarli-box h1 a:hover {\
+		color: rgb(245, 121, 0);\
+	}\
+	div#shaarli-box p,ul {\
+		font-size: 9pt;\
+		padding: 0px 10px;\
+	}\
+	div#shaarli-box li {\
+		display: inline;\
+		list-style-type: none;\
+		float: left;\
+		margin: 0px 2px 4px 4px;\
+		padding: 3px 3px 3px 20px;\
+		border-radius: 3px;\
+		box-shadow: 0px 0px 2px rgba(0,0,0,0.5);\
+		background: url(data:image/png;base64,'+tag+') no-repeat scroll 3px center rgb(255, 255, 255);\
+	}\
+	div#shaarli-box li a {\
+		text-decoration: none;\
+		color: rgb(119, 119, 119);\
 	}\
 ';
 
@@ -162,13 +217,70 @@ var style='\
 		GM_xmlhttpRequest({
 			method: 'GET',
 			url: baseuri+"?ws=url&term="+loc,
-			onload: function(response) {
-				console.log(response.status);
-				if(response.status == 200) {
+			onload: function(r) {
+				console.log(r.status);
+				if(r.status == 200) {
 					sbox.classList.add('found');
+					try {
+						var payload = JSON.parse(r.responseText);
+						console.log(payload);
+
+						setinfo(payload);
+						showtab('info', true);
+
+					} catch (e) {
+						console.error(e); return;
+					}
 				}
 			}
 		});
+	};
+
+	var setinfo = function(nfo) {
+		var tags = function() {
+			var html = '';
+			for(var i = 0; i < nfo['tags'].length; i++) {
+				html += 
+					'<li><a target="_blank" href="'+uri+'?searchtags='+nfo['tags'][i]+'">'+
+						nfo['tags'][i]+
+					'</a></li>';
+			}
+
+			return html;
+		};
+
+		uri = GM_getValue('uri');
+
+		var elt = document.getElementById('info');
+		elt.insertAdjacentHTML('afterbegin', '\
+				<h1><a target="_blank" href="'+uri+'?'+nfo['permalink']+'">'+nfo['title']+'</a></h1>'+
+				'<p id="desc">'+nfo['description']+'</p>\
+				<ul id="tags">'+tags()+'</ul>\
+		');
+	};
+
+	var showtab = function(tabname, showbox) {
+		var childs = sbox.childNodes;
+		for(var i = 0; i < childs.length; i++) {
+			try {
+				console.log(childs[i]);
+				if(childs[i].id == tabname) {
+					childs[i].classList.add('show'); continue;
+				}
+
+				childs[i].classList.remove('show');
+			} catch (e) {
+				console.log('showtab: ' +e);
+			}
+		}
+
+		switch(showbox) {
+			case true:
+				sbox.classList.add('show'); break;
+			default:
+				console.log('hide');
+				sbox.classList.remove('show');
+		}
 	};
 
 	var SH_savecfg = function(key, val, evt) {
@@ -183,8 +295,8 @@ var style='\
 	};
 
 	var SH_checkURI = function() {
+		showtab(undefined, false);
 		checkURI(GM_getValue('uri'));
-		sbox.classList.remove('show');
 	};
 
 	var sbox;
@@ -198,6 +310,8 @@ var style='\
 					Shaarli url:<br/>\
 					<input id="url" name="url" type="text" size="15" />\
 				</div>\
+				\
+				<div id="info"></div>\
 				\
 				<div id="icon"></div>\
 		');
@@ -216,7 +330,7 @@ var style='\
 		console.debug("shaarli uri="+uri);
 		if (!uri) {
 			console.log("shaarli uri not configured");
-			sbox.classList.add('show');
+			showtab('config', true);
 
 			return;
 		}
