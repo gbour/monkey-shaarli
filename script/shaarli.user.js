@@ -162,6 +162,7 @@ var style='\
 		padding: 0px;\
 	}\
 	div#shaarli-box h1 a {\
+		display: inline-block;\
 		line-height: 1.2em;\
 		font-family: Arial,sans-serif;\
 		font-size: 12pt;\
@@ -173,7 +174,7 @@ var style='\
 	div#shaarli-box h1 a:hover {\
 		color: rgb(245, 121, 0);\
 	}\
-	div#shaarli-box p,ul {\
+	div#shaarli-box p, div#shaarli-box ul {\
 		font-size: 9pt;\
 		padding: 0px 10px;\
 	}\
