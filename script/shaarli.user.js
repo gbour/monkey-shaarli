@@ -251,14 +251,20 @@ var style='\
 			return html;
 		};
 
-		uri = GM_getValue('uri');
+		var uri    = GM_getValue('uri')+'?'+nfo['permalink'];
+		var wname  = '_gmshaarli';
+		var wfeats = 'top=100px,left=100px,width=600px,height=400px,dependent=yes,alwaysRaised=yes,chrome=yes,titlebar=no';
 
 		var elt = document.getElementById('info');
 		elt.insertAdjacentHTML('afterbegin', '\
-				<h1><a target="_blank" href="'+uri+'?'+nfo['permalink']+'">'+nfo['title']+'</a></h1>'+
-				'<p id="desc">'+nfo['description']+'</p>\
+				<h1><a target="_blank" href="'+uri+'"\
+							 onclick="window.open(\''+uri+'\',\''+wname+'\',\''+wfeats+'\'); return false">'+nfo['title']+'</a></h1>\
+				<p id="desc">'+nfo['description']+'</p>\
 				<ul id="tags">'+tags()+'</ul>\
 		');
+
+		var elt = document.getElementById('icon');
+		elt.addEventListener('click' , function() { open(uri,wname,wfeats); }, false);
 	};
 
 	var showtab = function(tabname, showbox) {
