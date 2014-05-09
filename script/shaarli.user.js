@@ -146,6 +146,7 @@ var style='\
 		background-repeat: no-repeat;\
 		background-position: -30px 0px;\
 		background-image: url(data:image/png;base64,'+tile+');\
+		cursor: pointer;\
 	}\
 	div#shaarli-box.found #icon {\
 		background-position: 0px 0px;\
@@ -154,7 +155,6 @@ var style='\
 		visibility: visible;\
 	}\
 	div#shaarli-box .show {\
-		visibility: visible;\
 		display: block;\
 	}\
 	div#shaarli-box h1 {\
@@ -229,6 +229,7 @@ var style='\
 						setinfo(payload);
 						showtab('info', true);
 
+						setTimeout(function() { showtab('info', false); }, 5000);
 					} catch (e) {
 						console.error(e); return;
 					}
